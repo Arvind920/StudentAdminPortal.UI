@@ -33,8 +33,12 @@ private baseApiUrl="https://localhost:44321"
 
 
     }
-   return this.httpClient.put<Student>(this.baseApiUrl+'/students'+studentId,
+   return this.httpClient.put<Student>(this.baseApiUrl+'/students/'+studentId,
     updateStudentRequest)
   }
+  deleteStudent(studentId:string):Observable<Student>
+{
+  return this.httpClient.delete<Student>(this.baseApiUrl+'/students/'+studentId);
 
+}
 }
