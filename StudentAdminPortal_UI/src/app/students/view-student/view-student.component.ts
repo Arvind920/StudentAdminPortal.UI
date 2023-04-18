@@ -35,6 +35,9 @@ export class ViewStudentComponent implements OnInit {
     }
 
   }
+
+  isNewStudent=false;
+  header='';
   genderList:Gender[]=[];
   constructor(private readonly studentService:StudentService,
     private readonly route: ActivatedRoute,
@@ -48,11 +51,31 @@ export class ViewStudentComponent implements OnInit {
        this.studentId = params.get('id');
 
        if(this.studentId){
+
+
+
+
+          if(this.studentId.toLowerCase()==='Add'.toLowerCase())
+          {
+            this.isNewStudent=true;
+            this.header='Add New Student';
+             //if the route contain the Add
+        //-> new Student Functionality
+          }
+
+          else{
+            this.isNewStudent=false;
+            this.header='Edit Student';
+             //otherwise
+        //-> Existing Functionality
+
+
         this.studentService.getStudent(this.studentId)
         .subscribe(
           successResponse => {
          this.student= successResponse;
         });
+      }
 
         this.genderService.getGenderList()
         .subscribe(
@@ -80,11 +103,11 @@ this.snackbar.open('Student updated Successfully', undefined,{duration:2000});
     //log it
   }
 );
-  }
+}
   onDelete():void{
 this.studentService.deleteStudent(this.student.id).subscribe(
   (successResponse)=>{
-this.snackbar.open('Student Deleted Succfully',undefined,{
+this.snackbar.open('Student Deleted Successfully',undefined,{
   duration:2000
 });
 
@@ -97,6 +120,27 @@ setTimeout(()=>{
     //log
   }
 );
+}
+  onAdd():void{
+   this.studentService.addStudent(this.student)
+   .subscribe(
+    (successResponse)=>{
+      this.snackbar.open('Student Added Successfully',undefined,{
+        duration:2000
+      });
+
+      setTimeout(()=>{
+        this.router.navigateByUrl('students');
+      },2000);
+
+
+
+    },
+    (errorResponse)=>{
+//log
+    }
+   );
+
   }
 
 }

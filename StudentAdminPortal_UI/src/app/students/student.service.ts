@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { Student } from '../Models/api-models/student.model';
 import { UpdateStudentRequest } from '../Models/api-models/update-student-request.model';
+import { AddStudentRequest } from '../Models/api-models/add-student-request.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,10 +30,7 @@ private baseApiUrl="https://localhost:44321"
       genderId:StudentRequest.genderId,
       physicalAddress:StudentRequest.address.physicalAddress,
       postalAddress:StudentRequest.address.postalAddress
-
-
-
-    }
+    };
    return this.httpClient.put<Student>(this.baseApiUrl+'/students/'+studentId,
     updateStudentRequest)
   }
@@ -40,5 +38,19 @@ private baseApiUrl="https://localhost:44321"
 {
   return this.httpClient.delete<Student>(this.baseApiUrl+'/students/'+studentId);
 
+}
+addStudent(studentRequest: Student): Observable<Student> {
+  const addStudentRequest: AddStudentRequest = {
+    firstName: studentRequest.firstName,
+    lastName: studentRequest.lastName,
+    dateOfBirth: studentRequest.dateOfBirth,
+    email: studentRequest.email,
+    mobile: studentRequest.mobile,
+    genderId: studentRequest.genderId,
+    physicalAddress: studentRequest.address.physicalAddress,
+    postalAddress: studentRequest.address.postalAddress
+  };
+
+  return this.httpClient.post<Student>(this.baseApiUrl + '/students/add', addStudentRequest);
 }
 }
