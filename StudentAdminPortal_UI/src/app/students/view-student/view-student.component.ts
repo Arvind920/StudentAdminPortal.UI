@@ -38,6 +38,7 @@ export class ViewStudentComponent implements OnInit {
 
   isNewStudent=false;
   header='';
+  displayProfileImageUrl ='';
   genderList:Gender[]=[];
   constructor(private readonly studentService:StudentService,
     private readonly route: ActivatedRoute,
@@ -59,6 +60,7 @@ export class ViewStudentComponent implements OnInit {
           {
             this.isNewStudent=true;
             this.header='Add New Student';
+            this.setImage();
              //if the route contain the Add
         //-> new Student Functionality
           }
@@ -68,13 +70,16 @@ export class ViewStudentComponent implements OnInit {
             this.header='Edit Student';
              //otherwise
         //-> Existing Functionality
-
-
         this.studentService.getStudent(this.studentId)
         .subscribe(
           successResponse => {
          this.student= successResponse;
-        });
+         this.setImage();
+        },
+        (errorResponse)=>{
+          this.setImage();
+        }
+        );
       }
 
         this.genderService.getGenderList()
@@ -141,6 +146,36 @@ setTimeout(()=>{
     }
    );
 
+  }
+
+  uploadImage(event:any):void{
+    if(this.studentId){
+      const file: File=event.target.files[0];
+      this.studentService.uploadImage(this.student.id,file)
+      .subscribe(
+        (successResponse)=>
+        {
+          this.student.profileImageURl=successResponse;
+          this.setImage();
+          this.snackbar.open('Profile Image has been updated', undefined,{duration:2000});
+
+        },
+        (errorResponse)=>{
+
+        }
+      );
+    }
+  }
+  private setImage():void{
+     if(this.student.profileImageURl){
+      //Fethch the image by url
+      this.displayProfileImageUrl=this.studentService.getImagePath(this.student.profileImageURl);
+     }
+     else{
+      //Dispaly a default
+      this.displayProfileImageUrl='/assets/default_image.png';
+
+     }
   }
 
 }
