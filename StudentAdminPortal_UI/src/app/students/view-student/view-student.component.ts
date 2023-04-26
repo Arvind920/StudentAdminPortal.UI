@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Student } from 'src/app/Models/api-models/student.model';
 import { Gender } from 'src/app/Models/Ui-models/gender.model';
@@ -6,6 +6,7 @@ import { GenderService } from 'src/app/Services/gender.service';
 import { StudentService } from '../student.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-view-student',
@@ -40,6 +41,7 @@ export class ViewStudentComponent implements OnInit {
   header='';
   displayProfileImageUrl ='';
   genderList:Gender[]=[];
+  @ViewChild('studentDetailsForm') studentDetailsForm?:NgForm;
   constructor(private readonly studentService:StudentService,
     private readonly route: ActivatedRoute,
     private readonly genderService:GenderService,
@@ -96,6 +98,8 @@ export class ViewStudentComponent implements OnInit {
     );
   }
   onUpdate():void{
+    if( this.studentDetailsForm?.form.valid){
+
     //call student service to update student
 this.studentService.updateStudent(this.student.id,this.student)
 .subscribe(
@@ -108,6 +112,7 @@ this.snackbar.open('Student updated Successfully', undefined,{duration:2000});
     //log it
   }
 );
+    }
 }
   onDelete():void{
 this.studentService.deleteStudent(this.student.id).subscribe(
@@ -127,6 +132,9 @@ setTimeout(()=>{
 );
 }
   onAdd():void{
+   if( this.studentDetailsForm?.form.valid){
+
+
    this.studentService.addStudent(this.student)
    .subscribe(
     (successResponse)=>{
@@ -142,9 +150,12 @@ setTimeout(()=>{
 
     },
     (errorResponse)=>{
+      console.log(errorResponse);
 //log
     }
+
    );
+  }
 
   }
 
